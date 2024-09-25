@@ -1,4 +1,4 @@
-name: Update Submodules on Commit
+name: Update Submodules
 
 on:
   push:
@@ -14,24 +14,24 @@ jobs:
 
     steps:
       - name: Checkout Classroom Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 0  
-          
-      - name: Checkout Submodules
-        run: |
-          git submodule update --init --recursive
+          token: ${{ secrets.PAT }}
+          submodules: recursive
 
       - name: Update Submodules
         run: |
-          git submodule update --recursive --remote
+          git submodule update --init --recursive --remote
 
-      - name: Commit and Push Changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}  
+      - name: Commit Changes
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config --global user.name "GitHub Action"
+          git config --global user.email "noreply@github.com"
           git add .
-          git commit -m "Updated submodules" || echo "No changes to commit"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/justin-prabhakaran/aaaclass.git main
+          git commit -m "Updated submodules from frontend and backend" || echo "No changes to commit"
+
+      - name: Push Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git push origin main
